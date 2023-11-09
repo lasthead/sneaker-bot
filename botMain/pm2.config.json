@@ -1,0 +1,13 @@
+{
+  "apps": [
+    {
+      "name": "app-dist-prod",
+      "script": "./dist/main.js",
+      "args" : "start",
+      "watch": true,
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  ]
+}

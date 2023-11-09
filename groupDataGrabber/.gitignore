@@ -4,5 +4,6 @@
 .env
 
 __pycache__/
+*.session
 *.py[cod]
 *$py.class

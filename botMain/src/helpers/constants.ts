@@ -1,0 +1,1 @@
+export const PRODUCT_EXTRA_CHARGE = 2500
