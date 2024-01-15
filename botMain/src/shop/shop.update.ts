@@ -171,19 +171,19 @@ export class ShopUpdate {
       console.error(userName, userId);
       console.error(e, 'check_club_member');
     }
-    try {
-      chatMember2 = await this.clubBot.telegram.getChatMember(-1002058454166, userId);
-      console.log('chatMember2 ', chatMember2);
-      console.log('chat2 user', userId, userName);
-    } catch (e) {
-      console.error(userName, userId);
-      console.error(e, 'check_club2_member');
-    }
+    // try {
+    //   chatMember2 = await this.clubBot.telegram.getChatMember(-, userId);
+    //   console.log('chatMember2 ', chatMember2);
+    //   console.log('chat2 user', userId, userName);
+    // } catch (e) {
+    //   console.error(userName, userId);
+    //   console.error(e, 'check_club2_member');
+    // }
     const is_club_member1 = chatMember && (chatMember?.status === 'member' || chatMember?.status === 'creator');
-    const is_club_member2 = chatMember2 && (chatMember2?.status === 'member' || chatMember2?.status === 'creator');
+    // const is_club_member2 = chatMember2 && (chatMember2?.status === 'member' || chatMember2?.status === 'creator');
 
-    ctx.state.is_club_member = is_club_member1 || is_club_member2;
-    console.log(is_club_member1, is_club_member2, 'is chat member?', chatMember);
+    ctx.state.is_club_member = is_club_member1; // || is_club_member2;
+    // console.log(is_club_member1, is_club_member2, 'is chat member?', chatMember);
     return chatMember;
   }
 
