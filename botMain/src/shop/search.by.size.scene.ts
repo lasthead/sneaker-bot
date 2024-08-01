@@ -21,6 +21,8 @@ import {Context, Scenes, Telegraf} from "telegraf";
 import {Brand} from "./catalog/brands/brands.model";
 import {ProductsViewScene} from "./products.view.scene";
 import {PRODUCT_EXTRA_CHARGE} from "../helpers/constants";
+import * as fs from 'fs';
+import * as path from 'path';
 
 const { Op } = require("sequelize");
 
@@ -205,6 +207,7 @@ export class SearchBySizeScene {
         ...getSceneSessionState(ctx),
         orderedProduct: product,
       });
+
       try {
         await this.bot.telegram.callApi('sendPhoto',
           {
@@ -217,7 +220,23 @@ export class SearchBySizeScene {
         );
       } catch (e) {
         console.error(e);
+        try {
+          const picturePath = 'assets/pictures/placeholder.png';
+          const filePath = path.join(process.cwd(), 'src/', picturePath);
+          const photo = fs.createReadStream(filePath);
 
+          await this.bot.telegram.callApi('sendPhoto',
+            {
+              chat_id,
+              photo: { source: photo },
+              caption: description,
+              reply_markup: this.appButtons.productViewButtons('go-to-sizes').reply_markup,
+              parse_mode: 'HTML'
+            },
+          );
+        } catch (e) {
+          console.error(e, ' on send placeholder');
+        }
       }
     }
   }
