@@ -221,7 +221,10 @@ export class ProductsViewScene {
             chat_id,
             photo: { source: photo },
             caption: description,
-            reply_markup: this.appButtons.productViewButtons('go-to-sizes').reply_markup,
+            reply_markup: this.appButtons.productViewButtons(
+              'exit-view',
+              productsList.length > 1,
+              sizes.length > 0).reply_markup,
             parse_mode: 'HTML'
           },
         );
