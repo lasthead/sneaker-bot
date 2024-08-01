@@ -197,8 +197,6 @@ export class ProductsViewScene {
       sizes,
     });
 
-    console.log('cartinka ', product.picture);
-
     try {
       await this.bot.telegram.callApi('sendPhoto',
         {
