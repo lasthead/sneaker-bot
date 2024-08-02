@@ -140,8 +140,8 @@ export class ProductsViewScene {
     });
 
     //todo вынести в отдельный метод, дубль-код есть еще в размерах
-    const discountPrice = product.price;
-    const extraPrice = product.price + PRODUCT_EXTRA_CHARGE;
+    const discountPrice = product?.price || 0;
+    const extraPrice = product?.price ? product.price + PRODUCT_EXTRA_CHARGE : 0;
     let price = '';
 
     if (getSceneSessionState(ctx).is_club_member) {
