@@ -11,6 +11,7 @@ export class BrandsService {
 
   async getAllBrands() {
     return await this.brandRepository.findAll({
+      where: { is_active: true },
       include: [
         Product
       ]
