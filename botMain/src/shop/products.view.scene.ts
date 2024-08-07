@@ -53,7 +53,11 @@ export class ProductsViewScene {
       await ctx.deleteMessage();
       await this.replyWithProductItem(ctx);
     } catch (e) {
-      console.error(e);
+      try {
+        await this.replyWithProductItem(ctx);
+      } catch (e) {
+        console.error(e);
+      }
     }
   }
 
@@ -198,10 +202,17 @@ export class ProductsViewScene {
     });
 
     try {
+      const picName = product.article;
+      let picUrl = this.productService.findLocalPicture(picName);
+
+      if (!picUrl) {
+        picUrl = await this.productService.downloadImage(picName, product.picture);
+      }
+
       await this.bot.telegram.callApi('sendPhoto',
         {
           chat_id,
-          photo: product.picture,
+          photo: picUrl ? { source: picUrl } : product.picture,
           caption: description,
           reply_markup: this.appButtons.productViewButtons(
             'exit-view',
@@ -211,6 +222,8 @@ export class ProductsViewScene {
         },
       );
     } catch (e) {
+      console.error(e, ' on send product picture');
+
       try {
         const picturePath = 'assets/pictures/placeholder.png';
         const filePath = path.join(process.cwd(), 'src/', picturePath);

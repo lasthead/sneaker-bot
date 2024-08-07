@@ -20,6 +20,8 @@ import {ShopModule} from "./shop/shop.module";
 import {AppService} from "./app.service";
 import {AppController} from "./app.controller";
 import {ProductsService} from "./shop/catalog/products/products.service";
+import { HttpModule } from '@nestjs/axios'
+
 
 const session = new LocalSession({ database: "session_db.json" })
 const configService = ConfigService
@@ -76,6 +78,7 @@ const i18nPath = process.env?.NODE_ENV === 'development' ? '/i18n/' : '/i18n/';
 
       ClubModule,
       ShopModule,
+      HttpModule,
   ],
   controllers: [AppController, ProductsController],
   providers: [AppService, ProductsService],

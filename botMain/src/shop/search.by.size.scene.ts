@@ -33,6 +33,7 @@ export class SearchBySizeScene {
     private readonly i18n: I18nService,
     private readonly appButtons: ShopButtons,
     private shopUpdate: ShopUpdate,
+    private productService: ProductsService,
     private productsViewScene: ProductsViewScene,
     @InjectModel(Size) private sizeRepository: Repository<Size>,
     @InjectModel(Product) private productRepository: Repository<Product>,
@@ -209,10 +210,17 @@ export class SearchBySizeScene {
       });
 
       try {
+        const picName = product.article;
+        let picUrl = this.productService.findLocalPicture(picName);
+
+        if (!picUrl) {
+          picUrl = await this.productService.downloadImage(picName, product.picture);
+        }
+
         await this.bot.telegram.callApi('sendPhoto',
           {
             chat_id,
-            photo: product.picture,
+            photo: picUrl ? { source: picUrl } : product.picture,
             caption: description,
             reply_markup: this.appButtons.productViewButtons('go-to-sizes').reply_markup,
             parse_mode: 'HTML'

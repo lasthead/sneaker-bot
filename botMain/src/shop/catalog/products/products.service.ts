@@ -9,15 +9,23 @@ import {BrandDto} from "../brands/dto/brand.dto";
 import {CreateSizeDto} from "../sizes/dto/create-size.dto";
 import {ProductInterface} from "../../../googleDriveParser/interfaces";
 import {ProductSizes} from "./product-sizes.model";
+import {HttpService} from '@nestjs/axios'
+
+import * as path from 'path';
+import * as fs from 'fs';
+import {ReadStream} from "fs";
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectModel(Brand) private brandRepository: Repository<Brand>,
     @InjectModel(Size) private sizeRepository: Repository<Size>,
-    @InjectModel(Product) private productRepository: Repository<Product>
+    @InjectModel(Product) private productRepository: Repository<Product>,
+    private readonly httpService: HttpService,
   ) {
   }
+
+  picturesPath = 'docs/pictures/products/'
 
   async getAllProducts() {
     try {
@@ -191,6 +199,63 @@ export class ProductsService {
     } catch (e) {
       console.error(e, 'error import');
       return 'error';
+    }
+  }
+
+  findLocalPicture(srcUrl) {
+    try {
+      const filePath = path.join(process.cwd(), this.picturesPath, `${srcUrl}.png`);
+
+      if (!fs.existsSync(filePath)) {
+        return null;
+      }
+      return fs.createReadStream(filePath);
+    } catch (e) {
+      console.error(e, 'on search local pic');
+      return null;
+    }
+  }
+
+  async downloadImage(name: string, url: string): Promise<ReadStream> {
+    try {
+      const filePath = path.join(process.cwd(), this.picturesPath, `${name}.png`);
+
+      const dir = path.dirname(filePath);
+      fs.mkdirSync(dir, { recursive: true });
+
+      const response = await this.httpService.axiosRef({
+        url,
+        method: 'GET',
+        responseType: 'stream',
+      });
+
+      console.error('статус', response);
+
+
+      if (response.status >= 400) {
+        console.error(`Failed to download image, status code: ${response.status}`);
+        return null;
+      }
+
+      return new Promise((resolve, reject) => {
+        const writer = fs.createWriteStream(filePath);
+        response.data.pipe(writer);
+
+        writer.on('finish', () => {
+          resolve(fs.createReadStream(filePath));
+        });
+        writer.on('error', (error) => {
+          fs.unlink(filePath, (err) => {
+            if (err) {
+              console.error(`Failed to delete file: ${filePath}`, err);
+            }
+            reject(error);
+          });
+        });
+      });
+    } catch (e) {
+      console.error(e, 'on try download pic');
+      throw new Error('Error downloading image');
     }
   }
 }
