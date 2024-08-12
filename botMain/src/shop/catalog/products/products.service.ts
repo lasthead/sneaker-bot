@@ -25,7 +25,8 @@ export class ProductsService {
   ) {
   }
 
-  picturesPath = 'docs/pictures/products/'
+  picturesPath = 'docs/pictures/products/';
+  placeholderPath = 'assets/pictures/placeholder.png';
 
   async getAllProducts() {
     try {
@@ -216,6 +217,11 @@ export class ProductsService {
     }
   }
 
+  getPlaceholder() {
+    const filePath = path.join(process.cwd(), 'src/', this.placeholderPath);
+    return fs.createReadStream(filePath);
+  }
+
   async downloadImage(name: string, url: string): Promise<ReadStream> {
     try {
       const filePath = path.join(process.cwd(), this.picturesPath, `${name}.png`);
@@ -255,7 +261,6 @@ export class ProductsService {
       });
     } catch (e) {
       console.error(e, 'on try download pic');
-      throw new Error('Error downloading image');
     }
   }
 }

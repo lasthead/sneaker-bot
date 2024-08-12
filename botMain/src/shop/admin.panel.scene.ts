@@ -432,23 +432,45 @@ export class AdminPanelScene {
     const cancelButton = `back-to-list-${order.is_club_member ? 'shipping' : 'retail'}`;
 
     try {
+      const picName = order.product.article;
+      let picUrl = this.productService.findLocalPicture(picName);
+
+      if (!picUrl) {
+        picUrl = await this.productService.downloadImage(picName, order.product.picture);
+      }
 
       if (order.sended_product_photo) {
-        await this.bot.telegram.sendPhoto(chat_id, {source: order.sended_product_photo}, {
-          reply_markup: this.appButtons.buttonsList(buttonsList, cancelButton, '', false, 1).reply_markup,
-          caption: orderCaption,
-          parse_mode: 'HTML',
-        });
-      } else {
-        await this.bot.telegram.callApi('sendPhoto',
-          {
-            chat_id,
-            photo: order.product.picture,
-            caption: orderCaption,
+        try {
+          await this.bot.telegram.sendPhoto(chat_id, {source: order.sended_product_photo}, {
             reply_markup: this.appButtons.buttonsList(buttonsList, cancelButton, '', false, 1).reply_markup,
-            parse_mode: 'HTML'
-          },
-        );
+            caption: orderCaption,
+            parse_mode: 'HTML',
+          });
+        } catch (e) {
+          await this.bot.telegram.sendPhoto(chat_id, {source: picUrl || this.productService.getPlaceholder()}, {
+            reply_markup: this.appButtons.buttonsList(buttonsList, cancelButton, '', false, 1).reply_markup,
+            caption: orderCaption,
+            parse_mode: 'HTML',
+          });
+        }
+      } else {
+        try {
+          await this.bot.telegram.callApi('sendPhoto',
+            {
+              chat_id,
+              photo: order.product.picture,
+              caption: orderCaption,
+              reply_markup: this.appButtons.buttonsList(buttonsList, cancelButton, '', false, 1).reply_markup,
+              parse_mode: 'HTML'
+            },
+          );
+        } catch (e) {
+          await this.bot.telegram.sendPhoto(chat_id, {source: picUrl || this.productService.getPlaceholder()}, {
+            reply_markup: this.appButtons.buttonsList(buttonsList, cancelButton, '', false, 1).reply_markup,
+            caption: orderCaption,
+            parse_mode: 'HTML',
+          });
+        }
       }
     } catch (e) {
       console.error(e);
