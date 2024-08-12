@@ -96,23 +96,22 @@ export class OrdersViewScene {
       try {
         await ctx.deleteMessage();
 
-        if (order.sended_product_photo) {
-          await this.bot.telegram.sendPhoto(chat_id, {source: order.sended_product_photo}, {
-            reply_markup: this.appButtons.buttonsList(buttonsList, 'to-orders').reply_markup,
-            caption: orderCaption,
-            parse_mode: 'HTML',
-          });
-        } else {
-          await this.bot.telegram.callApi('sendPhoto',
-            {
-              chat_id,
-              photo: order.product.picture,
-              caption: orderCaption,
-              reply_markup: this.appButtons.buttonsList(buttonsList, 'to-orders').reply_markup,
-              parse_mode: 'HTML'
-            },
-          );
+        const picName = order.product.article;
+        let picUrl = this.productService.findLocalPicture(picName);
+
+        if (!picUrl) {
+          picUrl = await this.productService.downloadImage(picName, order.product.picture);
         }
+
+        await this.bot.telegram.callApi('sendPhoto',
+          {
+            chat_id,
+            photo: { source: picUrl || this.productService.getPlaceholder() },
+            caption: orderCaption,
+            reply_markup: this.appButtons.buttonsList(buttonsList, 'to-orders').reply_markup,
+            parse_mode: 'HTML'
+          },
+        );
       } catch (e) {
         console.error(e);
       }

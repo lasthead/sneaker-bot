@@ -439,39 +439,11 @@ export class AdminPanelScene {
         picUrl = await this.productService.downloadImage(picName, order.product.picture);
       }
 
-      if (order.sended_product_photo) {
-        try {
-          await this.bot.telegram.sendPhoto(chat_id, {source: order.sended_product_photo}, {
-            reply_markup: this.appButtons.buttonsList(buttonsList, cancelButton, '', false, 1).reply_markup,
-            caption: orderCaption,
-            parse_mode: 'HTML',
-          });
-        } catch (e) {
-          await this.bot.telegram.sendPhoto(chat_id, {source: picUrl || this.productService.getPlaceholder()}, {
-            reply_markup: this.appButtons.buttonsList(buttonsList, cancelButton, '', false, 1).reply_markup,
-            caption: orderCaption,
-            parse_mode: 'HTML',
-          });
-        }
-      } else {
-        try {
-          await this.bot.telegram.callApi('sendPhoto',
-            {
-              chat_id,
-              photo: order.product.picture,
-              caption: orderCaption,
-              reply_markup: this.appButtons.buttonsList(buttonsList, cancelButton, '', false, 1).reply_markup,
-              parse_mode: 'HTML'
-            },
-          );
-        } catch (e) {
-          await this.bot.telegram.sendPhoto(chat_id, {source: picUrl || this.productService.getPlaceholder()}, {
-            reply_markup: this.appButtons.buttonsList(buttonsList, cancelButton, '', false, 1).reply_markup,
-            caption: orderCaption,
-            parse_mode: 'HTML',
-          });
-        }
-      }
+      await this.bot.telegram.sendPhoto(chat_id, {source: picUrl || this.productService.getPlaceholder()}, {
+        reply_markup: this.appButtons.buttonsList(buttonsList, cancelButton, '', false, 1).reply_markup,
+        caption: orderCaption,
+        parse_mode: 'HTML',
+      });
     } catch (e) {
       console.error(e);
     }
