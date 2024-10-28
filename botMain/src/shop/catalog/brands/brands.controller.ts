@@ -1,6 +1,7 @@
 import {Controller, Get, HttpStatus, Query, Res} from '@nestjs/common';
 import {BrandsService} from "./brands.service";
 import {Response} from "express";
+import { ApiQuery } from '@nestjs/swagger';
 
 @Controller('brands')
 export class BrandsController {
@@ -17,7 +18,8 @@ export class BrandsController {
   }
 
   @Get('products')
-  async findAllWithProducts(@Query('withSize') withSize: boolean, @Res() res: Response) {
+  @ApiQuery({ name: 'withSize', required: false, type: Boolean, description: 'Include sizes in products' })
+  async findAllWithProducts(@Query('withSize') withSize: boolean = false, @Res() res: Response) {
     const brands = withSize
       ? await this.brandService.getAllBrandsWithProductsWithSize()
       : await this.brandService.getAllBrandsWithProducts();
