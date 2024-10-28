@@ -28,15 +28,15 @@ export class ProductsController {
   }
 
   @Get('picture')
-  @ApiResponse({ status: 200, description: 'Image retrieved successfully.' })
-  @ApiResponse({ status: 400, description: 'Article is required' })
-  @ApiResponse({ status: 404, description: 'Image not found.' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Image retrieved successfully.' })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Article is required' })
+  @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'Image not found.' })
   async getLocalPicture(@Query('article') article: string, @Res() res: Response) {
-    if (!article) return {
+    if (!article) return res.status(HttpStatus.NOT_FOUND).json({
       data: null,
       message: 'Article is required!',
-      status: 400,
-    }
+      status: HttpStatus.BAD_REQUEST,
+    });
 
     const pictureStream = this.productService.findLocalPicture(article);
 
