@@ -14,6 +14,7 @@ import {HttpService} from '@nestjs/axios'
 import * as path from 'path';
 import * as fs from 'fs';
 import {ReadStream} from "fs";
+import {Op} from "sequelize";
 
 @Injectable()
 export class ProductsService {
@@ -30,7 +31,31 @@ export class ProductsService {
 
   async getAllProducts() {
     try {
-      return await this.productRepository.findAll()
+      return await this.productRepository.findAll({
+        attributes: { exclude: ['createdAt', 'updatedAt'] },
+      })
+    } catch (e) {
+      return e
+    }
+  }
+
+  async getAllProductsWithSizes() {
+    try {
+      return await this.productRepository.findAll({
+        attributes: { exclude: ['createdAt', 'updatedAt'] },
+        include: [
+          {
+            as: 'sizes',
+            model: Size,
+            through: {
+              where: { count: { [Op.gte]: 0} }
+            },
+          },
+          {
+            model: Brand
+          }
+        ]
+      })
     } catch (e) {
       return e
     }
@@ -203,9 +228,9 @@ export class ProductsService {
     }
   }
 
-  findLocalPicture(srcUrl) {
+  findLocalPicture(article) {
     try {
-      const filePath = path.join(process.cwd(), this.picturesPath, `${srcUrl}.png`);
+      const filePath = path.join(process.cwd(), this.picturesPath, `${article}.png`);
 
       if (!fs.existsSync(filePath)) {
         return null;

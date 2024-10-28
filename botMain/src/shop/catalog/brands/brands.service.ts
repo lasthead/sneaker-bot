@@ -12,9 +12,17 @@ export class BrandsService {
   async getAllBrands() {
     return await this.brandRepository.findAll({
       where: { is_active: true },
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
+    })
+  }
+
+  async getAllBrandsWithProducts() {
+    return await this.brandRepository.findAll({
+      where: { is_active: true },
       include: [
         Product
-      ]
+      ],
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
     })
   }
 

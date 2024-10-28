@@ -8,7 +8,7 @@ export class AppController {
 
   @Get('/api/import/gdrive/')
   async getHello() {
-    return 'Not available on web';
+    return 'Not available on HTTP';
     // await this.appService.importProducts(params);
   }
 }

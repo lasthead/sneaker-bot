@@ -11,7 +11,13 @@ export class SizesService {
     return await this.sizeRepository.create(dto)
   }
 
+  async getAllSizes() {
+    return await this.sizeRepository.findAll({
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
+    });
+  }
+
   async getSize(size: number) {
-    await this.sizeRepository.findOne({ where: { size } })
+    return await this.sizeRepository.findOne({ where: { size } })
   }
 }

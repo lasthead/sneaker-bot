@@ -65,7 +65,7 @@ export class ShopUpdate {
 
   @Action("catalog")
   async getCatalog(ctx: Context, msgUpdate = true) {
-      const brands = await this.brandService.getAllBrands();
+      const brands = await this.brandService.getAllBrandsWithProducts();
 
       try {
         if (msgUpdate) {
