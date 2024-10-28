@@ -12,7 +12,7 @@ async function start() {
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/swagger', app, document);
+  SwaggerModule.setup('swagger-ui', app, document);
 
   await app.listen(PORT, () => {console.log(`Server started on port = ${PORT}`)});
 }
