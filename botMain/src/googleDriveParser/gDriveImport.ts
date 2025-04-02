@@ -83,7 +83,7 @@ export const initImport = async (params: ImportParams, debug = false): Promise<P
     ...params,
   }
 
-  const scriptStatus = await runShellScript(`python3 ${initParams.downloadScriptPath} ${initParams.outputFilePath} ${initParams.fileId}`);
+  const scriptStatus = await runShellScript(`python3.9 ${initParams.downloadScriptPath} ${initParams.outputFilePath} ${initParams.fileId}`);
   if (scriptStatus?.status === true) {
     const data = await readZipFile(initParams.outputFilePath);
 
