@@ -15,25 +15,20 @@ export class ShopButtons {
   ) {}
 
   public actionButtons(isAdmin = false) {
-    const link = 'https://telegra.ph/Info-04-04-4';
     const user = 'https://t.me/Po_shagamm_bot';
     const reviews = 'https://t.me/ps_feedback';
-    const dropshipping = 'http://shkitov.com';
 
     let buttons = [
       Markup.button.callback(this.i18n.t("dict.buttons.start.catalog"), "catalog"),
       Markup.button.callback(this.i18n.t("dict.buttons.start.search"), "search"),
       Markup.button.url(this.i18n.t("dict.buttons.start.reviews"), reviews),
-      Markup.button.url(this.i18n.t("dict.buttons.start.info"), link),
       Markup.button.url(this.i18n.t("dict.buttons.start.help"), user),
-      Markup.button.url(this.i18n.t("dict.buttons.start.dropshipping"), dropshipping),
     ]
 
     if (isAdmin) {
       return Markup.inlineKeyboard([
           [buttons[0], buttons[1]],
           [buttons[2], buttons[3]],
-          [buttons[4], buttons[5]],
           [ Markup.button.callback(this.i18n.t("dict.buttons.start.orders"), "orders") ],
           [ Markup.button.callback(this.i18n.t("dict.buttons.start.admin_panel"), "admin-panel") ],
         ],
