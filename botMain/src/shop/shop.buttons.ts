@@ -15,18 +15,14 @@ export class ShopButtons {
   ) {}
 
   public actionButtons(isAdmin = false) {
-    const link = 'https://telegra.ph/Info-04-04-4';
     const user = 'https://t.me/Po_shagamm_bot';
     const reviews = 'https://t.me/ps_feedback';
-    const dropshipping = 'http://shkitov.com';
 
     let buttons = [
       Markup.button.callback(this.i18n.t("dict.buttons.start.catalog"), "catalog"),
       Markup.button.callback(this.i18n.t("dict.buttons.start.search"), "search"),
       Markup.button.url(this.i18n.t("dict.buttons.start.reviews"), reviews),
-      Markup.button.url(this.i18n.t("dict.buttons.start.info"), link),
       Markup.button.url(this.i18n.t("dict.buttons.start.help"), user),
-      Markup.button.url(this.i18n.t("dict.buttons.start.dropshipping"), dropshipping),
     ]
 
     if (isAdmin) {
